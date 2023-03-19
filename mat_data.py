@@ -180,6 +180,17 @@ def GaN(doping_type=None, doping=0):
         doping=doping,
         effective_m_e=0.20,
         effective_m_h=1.5
+    )
+
+def GaO(doping_type=None, doping=0):
+    return material.semiconductor(
+        Eg=5.3, 
+        electron_affinity=4.1, 
+        epsilon=8.9, 
+        doping_type=doping_type,
+        doping=doping,
+        effective_m_e=0.20,
+        effective_m_h=1.5
     ) 
 
 # Intended as Al(x) Ga(1-x) As
@@ -207,7 +218,7 @@ but it's not that important (we are tolerating worse approximations)
 """
 
 list_of_semiconductors = [
-    Si, GaAs, Ge, GaP, InAs, GaSb, InSb, InP, AlN, InN, GaN 
+    Si, GaAs, Ge, GaP, InAs, GaSb, InSb, InP, AlN, InN, GaN, GaO
 ]
 
 # https://en.wikipedia.org/wiki/Work_function#Work_functions_of_elements
@@ -239,8 +250,9 @@ Sn = material.metal(work_function=4.42)
 Te = material.metal(work_function=4.95)
 Ti = material.metal(work_function=4.33)
 Zn = material.metal(work_function=3.63) # up to 4.9
+Ni = material.metal(work_function=5.05) # up to 5.35
 
 list_of_metals = [
     Ag, Al, As, Au, B , C , Ca, Cd, Cu, Fe, Ga, In, K , 
-    Li, Mg, Mn, Na, Pb, Pd, Pt, Sb, Se, Sn, Te, Ti, Zn
+    Li, Mg, Mn, Na, Pb, Pd, Pt, Sb, Se, Sn, Te, Ti, Zn, Ni
 ]
