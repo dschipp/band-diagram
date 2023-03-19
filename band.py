@@ -2,6 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt # type: ignore
 import material
 import warnings
+import plotly.express as px
+import plotly.graph_objects as go
+
+my_config = {
+  'toImageButtonOptions': {
+    'format': 'png', # one of png, svg, jpeg, webp
+    'filename': 'custom_image',
+    'height': 500,
+    'width': 1000,
+    'scale': 4 # Multiply title/legend/axis/canvas sizes by this factor
+  }
+}
 
 from collections.abc import Iterable
 
@@ -295,24 +307,55 @@ class band_diagram:
             At 300 K should be 0.026 eV, but can be set to higher values for
             representative purposes of the two populations, by default 0.5
         """
+        fig = go.Figure()
         if title is not None:
-            plt.title(title)
+            fig.update_layout(title=title)
         if display_eh:
-            self._display_eh(smearing)
-            
-        plt.plot(self.grid, self.levels['Ec'], label='Ec', color='maroon')
-        plt.plot(self.grid, self.levels['Ev'], label='Ev', color='darkslategrey')
+            #self._display_eh(smearing)
+            pass
+
+
+        fig.add_trace(go.Scatter(x=self.grid, y=self.levels['Ev'], name='Ev', line=dict(color="royalblue", width=3)))
+        fig.add_trace(go.Scatter(x=self.grid, y=self.levels['Ec'], name='Ec', line=dict(color="firebrick", width=3)))
+
         if display_E0:
-            plt.plot(self.grid, self.levels['E0'], label='E0', color='darkmagenta')
-        plt.plot(self.grid, self.Ef, label='Ef', linestyle='--', color='black')
-        plt.ylabel('energy ($eV$)')
-        plt.xlabel('layer thickness ($\mu m$)')
-        plt.legend()
+            fig.add_trace(go.Scatter(x=self.grid, y=self.levels['E0'], name='E0', line_color='darkmagenta'))
+
+        fig.add_trace(go.Scatter(x=self.grid, y=self.Ef, name='Ef', line=dict(color="black", width=3, dash='dash')))
+
+        fig.update_layout(yaxis_title="Energy [eV]", xaxis_title="layer thickness [um]", showlegend=True, template="none", font=dict(
+                    family="cmr10",
+                    size=30,
+                    color="black"
+                ),
+                    margin=dict(
+                    l=120,
+                    r=50,
+                    b=90,
+                    t=30,
+                    pad=4
+                ),
+                legend=dict(
+                    traceorder="reversed",
+                    title_font_family="cmr10",
+                    font=dict(
+                        family="cmr10",
+                        size=24,
+                        color="black"
+                    ),
+                    bordercolor="Black",
+                    borderwidth=2
+                ))
+
+        fig.update_xaxes(showline=True, linewidth=2, linecolor='black', mirror=True) # The x mirror line
+        fig.update_yaxes(showline=True, linewidth=2, linecolor='black', mirror=True) # The y mirror line 
+
+        fig.update_yaxes(dtick=1,showgrid=False, gridwidth=1, gridcolor='Black')
+        fig.update_xaxes(showgrid=False, gridwidth=1, gridcolor='#d3d3d3', griddash='dash', zeroline=False)
+
         if show:
-            plt.tight_layout()
-            # saves to plots folder (executing some_device it saves everything)
-            # plt.savefig('../plots/'+ title + '.png', bbox_inches='tight', dpi=200, facecolor='white', transparent=False)
-            plt.show()
+            #fig.show(config=my_config)
+            return fig
         
         
     def apply_voltage(self, 
